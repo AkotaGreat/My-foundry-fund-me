@@ -2,18 +2,18 @@
 
 pragma solidity ^0.8.19;
 
-import {Test, console} from 'forge-std/Test.sol';
-import {FundMe} from '../../src/FundMe.sol';
-import {FundMeDeployScript} from '../../script/FundMeDeployScript.s.sol';
-import {FundFundMe, WithdrawFundMe} from '../../script/Interactions.s.sol';
+import {Test, console} from "forge-std/Test.sol";
+import {FundMe} from "../../src/FundMe.sol";
+import {FundMeDeployScript} from "../../script/FundMeDeployScript.s.sol";
+import {FundFundMe, WithdrawFundMe} from "../../script/Interactions.s.sol";
 
 contract FundMeTestIntegration is Test {
     FundMe public fundMe;
     FundMeDeployScript Deployer;
 
     address USER = makeAddr("user");
-    uint public constant SEND_VALUE = 0.1 ether;
-    uint public constant STARTING_USER_BALANCE = 10 ether;
+    uint256 public constant SEND_VALUE = 0.1 ether;
+    uint256 public constant STARTING_USER_BALANCE = 10 ether;
 
     function setUp() external {
         vm.txGasPrice(0);
@@ -21,10 +21,10 @@ contract FundMeTestIntegration is Test {
         fundMe = Deployer.run();
         vm.deal(USER, STARTING_USER_BALANCE);
     }
-    function testUserAndOwnerInteractions() public {
 
-        uint preUSERBalance = address(USER).balance;
-        uint preOwnerBalance = address(fundMe.getOwner()).balance;
+    function testUserAndOwnerInteractions() public {
+        uint256 preUSERBalance = address(USER).balance;
+        uint256 preOwnerBalance = address(fundMe.getOwner()).balance;
 
         vm.prank(USER);
         fundMe.fund{value: SEND_VALUE}();
@@ -32,13 +32,11 @@ contract FundMeTestIntegration is Test {
         WithdrawFundMe withdrawFundMe = new WithdrawFundMe();
         withdrawFundMe.withdrawFundMe(address(fundMe));
 
-        uint afterUSERBalance = address(USER).balance;
-        uint afterOwnerBalance = address(fundMe.getOwner()).balance;
+        uint256 afterUSERBalance = address(USER).balance;
+        uint256 afterOwnerBalance = address(fundMe.getOwner()).balance;
 
         assert(address(fundMe).balance == 0);
         assertEq(afterUSERBalance + SEND_VALUE, preUSERBalance);
         assertGe(afterOwnerBalance, SEND_VALUE + preOwnerBalance);
     }
-    
-
 }

@@ -2,13 +2,12 @@
 
 pragma solidity ^0.8.19;
 
-import {Script} from 'forge-std/Script.sol';
-import {FundMe} from '../src/FundMe.sol';
-import {HelperConfig} from './HelperConfig.s.sol';
+import {Script} from "forge-std/Script.sol";
+import {FundMe} from "../src/FundMe.sol";
+import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract FundMeDeployScript is Script {
-    function run() external returns (FundMe){
-
+    function run() external returns (FundMe) {
         HelperConfig helperConfig = new HelperConfig();
         address availablePriceFeed = helperConfig.activeNetworkConfig();
 
@@ -17,5 +16,4 @@ contract FundMeDeployScript is Script {
         vm.stopBroadcast();
         return fundMe;
     }
-
 }
